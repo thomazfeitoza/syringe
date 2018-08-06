@@ -35,7 +35,11 @@ func resolveDependency(c *Container, name string) reflect.Value {
 
 	for i := 0; i < numFields; i++ {
 		field := moduleType.Field(i)
-		depName := field.Tag.Get(injectorTag)
+		depName, hasTag := field.Tag.Lookup(injectorTag)
+
+		if !hasTag {
+			continue
+		}
 
 		if depName != "" {
 			dep := resolveDependency(c, depName)
